@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת מספר טלפון - אל תתקשר אליי</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .results p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>בדיקת מספר טלפון במאגר "אל תתקשר אליי"</h1>
+        <input type="text" id="phoneInput" placeholder="הזן מספר טלפון">
+        <button onclick="checkPhone()">בדוק מספר</button>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        async function checkPhone() {
+            const phoneInput = document.getElementById('phoneInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            // Reset previous results
+            resultsDiv.innerHTML = '';
+
+            // Check if the input is valid
+            if (phoneInput === '') {
+                resultsDiv.innerHTML = '<p class="error">אנא הזן מספר טלפון.</p>';
+                return;
+            }
+
+            try {
+                // Prepare the API request
+                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // Use production URL
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Provided token
+                
+                const data = {
+                    data: [phoneInput]
+                };
+
+                // Make the API call
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': Bearer ${token},
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Display the results
+                if (result && result.data) {
+                    const phoneStatus = result.data[0]; // Assuming only one phone number is checked
+                    if (typeof phoneStatus === 'string') {
+                        resultsDiv.innerHTML = <p>המספר <strong>${phoneInput}</strong> רשום במאגר "אל תתקשר אליי".</p>;
+                    } else if (phoneStatus.phone) {
+                        resultsDiv.innerHTML = <p>המספר <strong>${phoneStatus.phone}</strong> אינו רשום במאגר.</p>;
+                    }
+                } else {
+                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסו שוב.</p>';
+                }
+            } catch (error) {
+                console.error('Error checking phone number:', error);
+                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסו שוב מאוחר יותר.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
