@@ -75,7 +75,7 @@
             try {
                 // AllOrigins proxy URL
                 const proxyUrl = 'https://api.allorigins.win/get?url=';
-                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // The original API URL
+                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query?data=' + encodeURIComponent(JSON.stringify([phoneInput])); // Sending the phone number in query string
 
                 // Full URL with proxy
                 const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
@@ -83,19 +83,13 @@
                 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFc-vs0FPl65BhY'; // Provided token
                 const identifier = '208569939_64828693'; // Provided IDENTIFIER
                 
-                const data = {
-                    data: [phoneInput]
-                };
-
                 // Make the API call through the proxy
                 const response = await fetch(fullUrl, {
-                    method: 'POST',
+                    method: 'GET', // Changing to GET
                     headers: {
                         'token': token,
-                        'name': identifier,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                        'name': identifier
+                    }
                 });
 
                 // Decode the response from AllOrigins
