@@ -53,8 +53,8 @@
 <body>
     <div class="container">
         <h1>בדיקת מספר טלפון במאגר "אל תתקשר אליי"</h1>
-        <input type="text" id="phoneInput" placeholder="הזן מספר טלפון">
-        <button onclick="checkPhone()">בדוק מספר</button>
+        <input type="text" id="phoneInput" placeholder="הזינו מספר טלפון">
+        <button onclick="checkPhone()">בדיקת מספר</button>
         <div class="results" id="results"></div>
     </div>
 
@@ -68,13 +68,18 @@
 
             // Check if the input is valid
             if (phoneInput === '') {
-                resultsDiv.innerHTML = '<p class="error">אנא הזן מספר טלפון.</p>';
+                resultsDiv.innerHTML = '<p class="error">אנא הזינו מספר טלפון.</p>';
                 return;
             }
 
             try {
-                // Prepare the API request
-                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // Use production URL
+                // CORS Anywhere proxy URL
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // The original API URL
+
+                // Full URL with proxy
+                const fullUrl = proxyUrl + apiUrl;
+
                 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Provided token
                 const identifier = '208569939_64828693'; // Provided IDENTIFIER
                 
@@ -82,12 +87,12 @@
                     data: [phoneInput]
                 };
 
-                // Make the API call
-                const response = await fetch(apiUrl, {
+                // Make the API call through the proxy
+                const response = await fetch(fullUrl, {
                     method: 'POST',
                     headers: {
-                        'token': token,              // Setting the token in the "token" header
-                        'name': identifier,           // Setting the IDENTIFIER in the "name" header
+                        'token': token,
+                        'name': identifier,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data)
@@ -105,11 +110,11 @@
                         resultsDiv.innerHTML = `<p>המספר <strong>${phoneStatus.phone}</strong> אינו רשום במאגר.</p>`;
                     }
                 } else {
-                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסה שוב.</p>';
+                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסו שוב.</p>';
                 }
             } catch (error) {
                 console.error('Error checking phone number:', error);
-                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסה שוב מאוחר יותר.</p>';
+                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסו שוב מאוחר יותר.</p>';
             }
         }
     </script>
