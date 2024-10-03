@@ -62,7 +62,7 @@
         async function checkPhone() {
             const phoneInput = document.getElementById('phoneInput').value;
             const resultsDiv = document.getElementById('results');
-            
+
             // Reset previous results
             resultsDiv.innerHTML = '';
 
@@ -73,34 +73,37 @@
             }
 
             try {
-                // AllOrigins proxy URL
-                const proxyUrl = 'https://api.allorigins.win/get?url=';
-                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query?data=' + encodeURIComponent(JSON.stringify([phoneInput])); // Sending the phone number in query string
+                // CORS Proxy URL
+                const proxyUrl = 'https://cors-proxy.htmldriven.com/?url=';
+                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // The original API URL
 
                 // Full URL with proxy
                 const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
 
                 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFc-vs0FPl65BhY'; // Provided token
                 const identifier = '208569939_64828693'; // Provided IDENTIFIER
-                
+
+                const data = {
+                    data: [phoneInput]
+                };
+
                 // Make the API call through the proxy
                 const response = await fetch(fullUrl, {
-                    method: 'GET', // Changing to GET
+                    method: 'POST',
                     headers: {
                         'token': token,
-                        'name': identifier
-                    }
+                        'name': identifier,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 });
 
-                // Decode the response from AllOrigins
-                const responseData = await response.json();
-                const apiResponse = JSON.parse(responseData.contents); // Parse the actual API response
-
-                console.log('Result:', apiResponse); // Log the parsed result
+                const result = await response.json();
+                console.log('Result:', result); // Log the parsed result
 
                 // Display the results
-                if (apiResponse && apiResponse.data) {
-                    const phoneStatus = apiResponse.data[0]; // Assuming only one phone number is checked
+                if (result && result.data) {
+                    const phoneStatus = result.data[0]; // Assuming only one phone number is checked
                     if (typeof phoneStatus === 'string') {
                         resultsDiv.innerHTML = `<p>המספר <strong>${phoneInput}</strong> רשום במאגר "אל תתקשר אליי".</p>`;
                     } else if (phoneStatus.phone) {
