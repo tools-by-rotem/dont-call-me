@@ -70,7 +70,8 @@
             }
 
             try {
-                const apiUrl = 'https://thingproxy.freeboard.io/fetch/https://dnc-api.fta.gov.il/restricted/phone-query';
+                const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query';
+                const corsProxy = 'https://cors.sh/'; // השתמש בפרוקסי
 
                 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY';
                 const identifier = '208569939_64828693';
@@ -79,7 +80,7 @@
                     data: [phoneInput]
                 };
 
-                const response = await fetch(apiUrl, {
+                const response = await fetch(corsProxy + apiUrl, {
                     method: 'POST',
                     headers: {
                         'token': token,
@@ -90,7 +91,6 @@
                 });
 
                 const result = await response.json();
-                console.log('Result:', result);
 
                 if (result && result.data) {
                     const phoneStatus = result.data[0];
