@@ -73,14 +73,14 @@
             }
 
             try {
-                // CORS Anywhere proxy URL
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                // AllOrigins proxy URL
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
                 const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // The original API URL
 
                 // Full URL with proxy
-                const fullUrl = proxyUrl + apiUrl;
+                const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
 
-                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Provided token
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFc-vs0FPl65BhY'; // Provided token
                 const identifier = '208569939_64828693'; // Provided IDENTIFIER
                 
                 const data = {
@@ -98,12 +98,15 @@
                     body: JSON.stringify(data)
                 });
 
-                const result = await response.json();
-                console.log('Result:', result); // Log the parsed result
+                // Decode the response from AllOrigins
+                const responseData = await response.json();
+                const apiResponse = JSON.parse(responseData.contents); // Parse the actual API response
+
+                console.log('Result:', apiResponse); // Log the parsed result
 
                 // Display the results
-                if (result && result.data) {
-                    const phoneStatus = result.data[0]; // Assuming only one phone number is checked
+                if (apiResponse && apiResponse.data) {
+                    const phoneStatus = apiResponse.data[0]; // Assuming only one phone number is checked
                     if (typeof phoneStatus === 'string') {
                         resultsDiv.innerHTML = `<p>המספר <strong>${phoneInput}</strong> רשום במאגר "אל תתקשר אליי".</p>`;
                     } else if (phoneStatus.phone) {
