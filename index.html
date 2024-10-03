@@ -75,7 +75,7 @@
             try {
                 // Prepare the API request
                 const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // Use production URL
-                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Provided token
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Your token
                 
                 const data = {
                     data: [phoneInput]
@@ -85,28 +85,29 @@
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
-                        'Authorization': Bearer ${token},
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data)
                 });
 
                 const result = await response.json();
+                console.log('Result:', result); // Log the parsed result
 
                 // Display the results
                 if (result && result.data) {
                     const phoneStatus = result.data[0]; // Assuming only one phone number is checked
                     if (typeof phoneStatus === 'string') {
-                        resultsDiv.innerHTML = <p>המספר <strong>${phoneInput}</strong> רשום במאגר "אל תתקשר אליי".</p>;
+                        resultsDiv.innerHTML = `<p>המספר <strong>${phoneInput}</strong> רשום במאגר "אל תתקשר אליי".</p>`;
                     } else if (phoneStatus.phone) {
-                        resultsDiv.innerHTML = <p>המספר <strong>${phoneStatus.phone}</strong> אינו רשום במאגר.</p>;
+                        resultsDiv.innerHTML = `<p>המספר <strong>${phoneStatus.phone}</strong> אינו רשום במאגר.</p>`;
                     }
                 } else {
-                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסו שוב.</p>';
+                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסה שוב.</p>';
                 }
             } catch (error) {
                 console.error('Error checking phone number:', error);
-                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסו שוב מאוחר יותר.</p>';
+                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסה שוב מאוחר יותר.</p>';
             }
         }
     </script>
