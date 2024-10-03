@@ -75,7 +75,8 @@
             try {
                 // Prepare the API request
                 const apiUrl = 'https://dnc-api.fta.gov.il/restricted/phone-query'; // Use production URL
-                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Your token
+                const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibk51bWJlciI6IjIwODU2OTkzOSIsIm5iZiI6MTcyNzk1NjQ1OCwiZXhwIjo1NTE0NzgyMDU4LCJpYXQiOjE3Mjc5NTY0NTh9.D1ioFfL283U7oU7YpgfsKh8aGB2vSFcV-s0FPl65BhY'; // Provided token
+                const identifier = '208569939_64828693'; // Provided IDENTIFIER
                 
                 const data = {
                     data: [phoneInput]
@@ -85,7 +86,8 @@
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'token': token,              // Setting the token in the "token" header
+                        'name': identifier,           // Setting the IDENTIFIER in the "name" header
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data)
