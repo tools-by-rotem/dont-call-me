@@ -57,8 +57,8 @@
 <body>
     <div class="container">
         <h1>בדיקת מספר טלפון במאגר "אל תתקשר אליי"</h1>
-        <input type="text" id="phoneInput" placeholder="הזן מספר טלפון">
-        <button onclick="checkPhone()">בדוק מספר</button>
+        <input type="text" id="phoneInput" placeholder="הזינו מספר טלפון">
+        <button onclick="checkPhone()">בדיקת מספר</button>
         <div class="results" id="results"></div>
     </div>
 
@@ -72,7 +72,7 @@
 
             // Check if the input is valid
             if (phoneInput === '') {
-                resultsDiv.innerHTML = '<p class="error">אנא הזן מספר טלפון.</p>';
+                resultsDiv.innerHTML = '<p class="error">אנא הזינו מספר טלפון.</p>';
                 return;
             }
 
@@ -114,11 +114,11 @@
                         resultsDiv.innerHTML = `<p>המספר <strong>${phoneStatus.phone}</strong> אינו רשום במאגר.</p>`;
                     }
                 } else {
-                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסה שוב.</p>';
+                    resultsDiv.innerHTML = '<p class="error">אירעה שגיאה בבדיקה, אנא נסו שוב.</p>';
                 }
             } catch (error) {
                 console.error('Error checking phone number:', error);
-                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסה שוב מאוחר יותר.</p>';
+                resultsDiv.innerHTML = '<p class="error">שגיאה בעת התחברות ל-API, אנא נסו שוב מאוחר יותר.</p>';
             }
         }
     </script>
